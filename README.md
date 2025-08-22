@@ -1,50 +1,84 @@
--- // Panel de ADM by Benjamim Hub
--- // Feito para rodar via loadstring do GitHub
-
+-- Panel de ADM completo para loadstring
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- // Criar ScreenGui
+-- ======== Tela de Carregamento ========
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "AdminPanel"
-screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+screenGui.Parent = PlayerGui
 
--- // Botão Ícone (abrir/fechar Hub)
+local loadingFrame = Instance.new("Frame")
+loadingFrame.Size = UDim2.new(1,0,1,0)
+loadingFrame.Position = UDim2.new(0,0,0,0)
+loadingFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
+loadingFrame.Parent = screenGui
+
+local loadingText = Instance.new("TextLabel")
+loadingText.Size = UDim2.new(1,0,0,50)
+loadingText.Position = UDim2.new(0,0,0.5,-25)
+loadingText.BackgroundTransparency = 1
+loadingText.TextColor3 = Color3.fromRGB(255,255,0)
+loadingText.Font = Enum.Font.FredokaOne
+loadingText.TextSize = 30
+loadingText.Text = "Carregando...\nBenjamim Hub"
+loadingText.TextScaled = true
+loadingText.Parent = loadingFrame
+
+task.delay(2,function()
+    loadingFrame:Destroy()
+end)
+
+-- ======== Ícone abrir/fechar Hub ========
 local iconButton = Instance.new("TextButton")
-iconButton.Name = "IconButton"
 iconButton.Size = UDim2.new(0, 50, 0, 50)
-iconButton.Position = UDim2.new(0, 10, 0, 200)
-iconButton.Text = "≡"
+iconButton.Position = UDim2.new(0, 20, 0, 20)
+iconButton.Text = "☰"
+iconButton.Visible = false
 iconButton.Parent = screenGui
 
 local iconCorner = Instance.new("UICorner")
-iconCorner.CornerRadius = UDim.new(0, 8)
+iconCorner.CornerRadius = UDim.new(0,10)
 iconCorner.Parent = iconButton
 
--- // Hub principal
+task.delay(2,function()
+    iconButton.Visible = true
+end)
+
+-- ======== Hub ========
 local hubFrame = Instance.new("Frame")
-hubFrame.Name = "HubFrame"
-hubFrame.Size = UDim2.new(0, 300, 0, 200)
-hubFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
-hubFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+hubFrame.Size = UDim2.new(0,300,0,220)
+hubFrame.Position = UDim2.new(0.5,-150,0.5,-110)
+hubFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
 hubFrame.Visible = false
 hubFrame.Parent = screenGui
 
 local hubCorner = Instance.new("UICorner")
-hubCorner.CornerRadius = UDim.new(0, 12)
+hubCorner.CornerRadius = UDim.new(0,15)
 hubCorner.Parent = hubFrame
 
--- // Título
+-- Título
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 40)
-title.BackgroundTransparency = 1
+title.Size = UDim2.new(1,0,0,40)
 title.Text = "Panel de ADM"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.BackgroundTransparency = 1
 title.Font = Enum.Font.SourceSansBold
-title.TextSize = 24
+title.TextSize = 22
 title.Parent = hubFrame
 
--- // Funções Kick e Kill
+-- Créditos
+local credit = Instance.new("TextLabel")
+credit.Size = UDim2.new(1,0,0,20)
+credit.Position = UDim2.new(0,0,0,40)
+credit.Text = "Criador: Benjamim   TikTok: Nobizin12"
+credit.TextColor3 = Color3.fromRGB(200,200,200)
+credit.BackgroundTransparency = 1
+credit.Font = Enum.Font.SourceSans
+credit.TextSize = 16
+credit.Parent = hubFrame
+
+-- ======== Funções Kick e Kill ========
 local function kickPlayer(name)
     local target = Players:FindFirstChild(name)
     if target then
@@ -59,47 +93,72 @@ local function killPlayer(name)
     end
 end
 
--- // Botão Kick
-local kickButton = Instance.new("TextButton")
-kickButton.Size = UDim2.new(0, 120, 0, 40)
-kickButton.Position = UDim2.new(0.1, 0, 0.4, 0)
-kickButton.Text = "Kick (;kick Nome)"
-kickButton.Parent = hubFrame
+-- ======== Botão Kick ========
+local kickBtn = Instance.new("TextButton")
+kickBtn.Size = UDim2.new(0.8,0,0,40)
+kickBtn.Position = UDim2.new(0.1,0,0.35,0)
+kickBtn.Text = "Kick Player"
+kickBtn.BackgroundColor3 = Color3.fromRGB(200,50,50)
+kickBtn.TextColor3 = Color3.fromRGB(255,255,255)
+kickBtn.Parent = hubFrame
 
 local kickCorner = Instance.new("UICorner")
-kickCorner.CornerRadius = UDim.new(0, 8)
-kickCorner.Parent = kickButton
+kickCorner.CornerRadius = UDim.new(0,10)
+kickCorner.Parent = kickBtn
 
-kickButton.MouseButton1Click:Connect(function()
-    local name = game:GetService("Players"):GetPlayers()[2] -- exemplo: pega o segundo player
+kickBtn.MouseButton1Click:Connect(function()
+    local name = Players:GetPlayers()[2] -- Exemplo: 2º player
     if name then
         kickPlayer(name.Name)
     end
 end)
 
--- // Botão Kill
-local killButton = Instance.new("TextButton")
-killButton.Size = UDim2.new(0, 120, 0, 40)
-killButton.Position = UDim2.new(0.55, 0, 0.4, 0)
-killButton.Text = "Kill (;kill Nome)"
-killButton.Parent = hubFrame
+-- ======== Botão Kill ========
+local killBtn = Instance.new("TextButton")
+killBtn.Size = UDim2.new(0.8,0,0,40)
+killBtn.Position = UDim2.new(0.1,0,0.6,0)
+killBtn.Text = "Kill Player"
+killBtn.BackgroundColor3 = Color3.fromRGB(50,50,200)
+killBtn.TextColor3 = Color3.fromRGB(255,255,255)
+killBtn.Parent = hubFrame
 
 local killCorner = Instance.new("UICorner")
-killCorner.CornerRadius = UDim.new(0, 8)
-killCorner.Parent = killButton
+killCorner.CornerRadius = UDim.new(0,10)
+killCorner.Parent = killBtn
 
-killButton.MouseButton1Click:Connect(function()
-    local name = game:GetService("Players"):GetPlayers()[2] -- exemplo: pega o segundo player
+killBtn.MouseButton1Click:Connect(function()
+    local name = Players:GetPlayers()[2] -- Exemplo: 2º player
     if name then
         killPlayer(name.Name)
     end
 end)
 
--- // Abrir/fechar o Hub
-local isOpen = false
+-- ======== Abrir/Fechar Hub ========
+local hubOpen = false
 iconButton.MouseButton1Click:Connect(function()
-    isOpen = not isOpen
-    hubFrame.Visible = isOpen
+    hubOpen = not hubOpen
+    hubFrame.Visible = hubOpen
+end)
+
+-- ======== Comandos via chat ========
+local function processCommand(player,msg)
+    if msg:sub(1,5) == ";kick" then
+        local targetName = msg:sub(7)
+        kickPlayer(targetName)
+    elseif msg:sub(1,5) == ";kill" then
+        local targetName = msg:sub(7)
+        killPlayer(targetName)
+    end
+end
+
+Players.PlayerAdded:Connect(function(player)
+    player.Chatted:Connect(function(msg)
+        processCommand(player,msg)
+    end)
+end)
+
+LocalPlayer.Chatted:Connect(function(msg)
+    processCommand(LocalPlayer,msg)
 end)
 
 print("✅ Panel de ADM carregado com sucesso!")
