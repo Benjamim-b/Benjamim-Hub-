@@ -1,69 +1,70 @@
---// Script Hub Moderno
--- Criador: Benjamim | TikTok: Nobizin12
--- Suba esse código no GitHub e rode via loadstring
+--// Hub Completo com Loadstring
+-- Salve este script no seu GitHub e rode com:
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/SEU-USUARIO/SEU-REPOSITORIO/main/HubScript.lua"))()
 
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- ScreenGui principal
+-- ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "ScriptHub"
 screenGui.Parent = playerGui
-screenGui.ResetOnSpawn = false
 
--- Ícone de abrir/fechar
-local icon = Instance.new("TextButton")
-icon.Name = "OpenCloseIcon"
-icon.Size = UDim2.new(0, 120, 0, 40)
-icon.Position = UDim2.new(0, 20, 0, 200)
-icon.Text = "📜 Script Hub"
-icon.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-icon.TextColor3 = Color3.fromRGB(255,255,255)
-icon.Parent = screenGui
+-- Ícone abrir/fechar
+local iconButton = Instance.new("TextButton")
+iconButton.Name = "Icon"
+iconButton.Text = "📜 Script Hub"
+iconButton.Size = UDim2.new(0, 120, 0, 40)
+iconButton.Position = UDim2.new(0.05, 0, 0.1, 0)
+iconButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+iconButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+iconButton.Parent = screenGui
 
-local uicorner = Instance.new("UICorner")
-uicorner.CornerRadius = UDim.new(0,10)
-uicorner.Parent = icon
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 12)
+uiCorner.Parent = iconButton
 
--- Frame do Hub
-local hub = Instance.new("Frame")
-hub.Name = "HubMain"
-hub.Size = UDim2.new(0, 400, 0, 450)
-hub.Position = UDim2.new(0.5, -200, 0.5, -225)
-hub.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-hub.Visible = false
-hub.Parent = screenGui
+-- Frame principal
+local hubFrame = Instance.new("Frame")
+hubFrame.Size = UDim2.new(0, 500, 0, 400)
+hubFrame.Position = UDim2.new(0.25, 0, 0.2, 0)
+hubFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+hubFrame.Visible = false
+hubFrame.Parent = screenGui
 
 local hubCorner = Instance.new("UICorner")
-hubCorner.CornerRadius = UDim.new(0,12)
-hubCorner.Parent = hub
+hubCorner.CornerRadius = UDim.new(0, 15)
+hubCorner.Parent = hubFrame
 
 -- Título
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1,0,0,40)
-title.Text = "Script Hub - Criador: Benjamim | TikTok: Nobizin12"
+title.Text = "Script Hub\nCriador: Benjamim | Tiktok: Nobizin12"
+title.Size = UDim2.new(1, 0, 0, 60)
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.BackgroundTransparency = 1
-title.TextColor3 = Color3.fromRGB(255,255,0)
 title.Font = Enum.Font.SourceSansBold
-title.TextSize = 18
-title.Parent = hub
+title.TextSize = 22
+title.Parent = hubFrame
 
--- Permitir mover
-local dragging, dragInput, dragStart, startPos
+-- Função arrastar
 local UIS = game:GetService("UserInputService")
+local dragging, dragInput, dragStart, startPos
 
 local function update(input)
 	local delta = input.Position - dragStart
-	hub.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-		startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	hubFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 end
 
-hub.InputBegan:Connect(function(input)
+iconButton.MouseButton1Down:Connect(function()
+	hubFrame.Visible = not hubFrame.Visible
+end)
+
+hubFrame.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging = true
 		dragStart = input.Position
-		startPos = hub.Position
+		startPos = hubFrame.Position
 
 		input.Changed:Connect(function()
 			if input.UserInputState == Enum.UserInputState.End then
@@ -73,7 +74,7 @@ hub.InputBegan:Connect(function(input)
 	end
 end)
 
-hub.InputChanged:Connect(function(input)
+hubFrame.InputChanged:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseMovement then
 		dragInput = input
 	end
@@ -85,78 +86,61 @@ UIS.InputChanged:Connect(function(input)
 	end
 end)
 
--- Abrir/fechar Hub
-icon.MouseButton1Click:Connect(function()
-	hub.Visible = not hub.Visible
-end)
+-- Criar botões
+local function createButton(name, yPos, callback)
+	local button = Instance.new("TextButton")
+	button.Text = name
+	button.Size = UDim2.new(0.9, 0, 0, 35)
+	button.Position = UDim2.new(0.05, 0, 0, yPos)
+	button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.Parent = hubFrame
 
--- Função utilitária para criar botões
-local function createButton(name, yPos)
-	local btn = Instance.new("TextButton")
-	btn.Size = UDim2.new(1, -20, 0, 35)
-	btn.Position = UDim2.new(0, 10, 0, yPos)
-	btn.Text = name
-	btn.BackgroundColor3 = Color3.fromRGB(45,45,45)
-	btn.TextColor3 = Color3.fromRGB(255,255,255)
-	btn.Parent = hub
-	local c = Instance.new("UICorner", btn)
-	c.CornerRadius = UDim.new(0,8)
-	return btn
+	local btnCorner = Instance.new("UICorner")
+	btnCorner.CornerRadius = UDim.new(0, 10)
+	btnCorner.Parent = button
+
+	button.MouseButton1Click:Connect(callback)
+	return button
 end
 
--- Criando os 10 botões
-local btn1 = createButton("1 - Créditos", 50)
-local btn2 = createButton("2 - Troll", 90)
-local btn3 = createButton("3 - Chat Premium", 130)
-local btn4 = createButton("4 - Copiador de Avatar", 170)
-local btn5 = createButton("5 - Fun (Premium / Vip)", 210)
-local btn6 = createButton("6 - Configurações", 250)
-local btn7 = createButton("7 - View", 290)
-local btn8 = createButton("8 - Chat Troll Visual", 330)
-local btn9 = createButton("9 - Outros Scripts", 370)
-local btn10 = createButton("10 - Misc (GamePass)", 410)
-
---// AÇÕES DOS BOTÕES (placeholders)
-btn1.MouseButton1Click:Connect(function()
-	game:GetService("StarterGui"):SetCore("SendNotification", {
-		Title = "Créditos";
-		Text = "Servidor: discord.gg/NXtJAPAg\nExecutor: "..player.Name;
-		Duration = 6;
-	})
+-- Botões com funções placeholder (você ajusta depois)
+createButton("1. Créditos", 70, function()
+	print("Abrindo créditos... Discord: https://discord.gg/NXtJAPAg")
 end)
 
-btn2.MouseButton1Click:Connect(function()
-	print("Troll menu seria aberto aqui (Bring, Bring V2, Bola V2 etc.)")
+createButton("2. Troll (Bring, Bola, Void)", 110, function()
+	print("Executando Troll Commands...")
 end)
 
-btn3.MouseButton1Click:Connect(function()
-	print("Chat Premium ativado para "..player.Name)
+createButton("3. Chat Premium", 150, function()
+	print("Chat Premium ativado!")
 end)
 
-btn4.MouseButton1Click:Connect(function()
-	print("Copiador de Avatar ativado")
+createButton("4. Copiador de Avatar", 190, function()
+	print("Copiando avatar...")
 end)
 
-btn5.MouseButton1Click:Connect(function()
-	print("Premium/Vip concedido")
+createButton("5. Fun (Premium/Vip)", 230, function()
+	print("Dando Premium/Vip...")
 end)
 
-btn6.MouseButton1Click:Connect(function()
-	print("Abrir configurações de cor e salvar")
+createButton("6. Configuração (Cor + Salvar)", 270, function()
+	print("Abrindo Configuração...")
 end)
 
-btn7.MouseButton1Click:Connect(function()
-	print("View ativado")
+createButton("7. View", 310, function()
+	print("View ativado...")
 end)
 
-btn8.MouseButton1Click:Connect(function()
-	print("Chat Troll Visual ativado")
+createButton("8. Chat Troll Visual", 350, function()
+	print("Chat troll ligado...")
 end)
 
-btn9.MouseButton1Click:Connect(function()
-	print("Executar scripts externos (Coquette Hub, Lolyta, davi999 etc.)")
+createButton("9. Scripts Parceiros", 390, function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/davi999/coquette/main/hub.lua"))()
 end)
 
-btn10.MouseButton1Click:Connect(function()
-	print("Misc: GamePass Brookhaven ativado")
+createButton("10. Misc (Gamepass Brookhaven)", 430, function()
+	print("Gamepasses liberados...")
 end)
