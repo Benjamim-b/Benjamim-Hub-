@@ -1,164 +1,162 @@
--- Panel de ADM completo para loadstring
+--// Script Hub Moderno
+-- Criador: Benjamim | TikTok: Nobizin12
+-- Suba esse código no GitHub e rode via loadstring
+
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
--- ======== Tela de Carregamento ========
+-- ScreenGui principal
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "AdminPanel"
-screenGui.Parent = PlayerGui
+screenGui.Name = "ScriptHub"
+screenGui.Parent = playerGui
+screenGui.ResetOnSpawn = false
 
-local loadingFrame = Instance.new("Frame")
-loadingFrame.Size = UDim2.new(1,0,1,0)
-loadingFrame.Position = UDim2.new(0,0,0,0)
-loadingFrame.BackgroundColor3 = Color3.fromRGB(20,20,20)
-loadingFrame.Parent = screenGui
+-- Ícone de abrir/fechar
+local icon = Instance.new("TextButton")
+icon.Name = "OpenCloseIcon"
+icon.Size = UDim2.new(0, 120, 0, 40)
+icon.Position = UDim2.new(0, 20, 0, 200)
+icon.Text = "📜 Script Hub"
+icon.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+icon.TextColor3 = Color3.fromRGB(255,255,255)
+icon.Parent = screenGui
 
-local loadingText = Instance.new("TextLabel")
-loadingText.Size = UDim2.new(1,0,0,50)
-loadingText.Position = UDim2.new(0,0,0.5,-25)
-loadingText.BackgroundTransparency = 1
-loadingText.TextColor3 = Color3.fromRGB(255,255,0)
-loadingText.Font = Enum.Font.FredokaOne
-loadingText.TextSize = 30
-loadingText.Text = "Carregando...\nBenjamim Hub"
-loadingText.TextScaled = true
-loadingText.Parent = loadingFrame
+local uicorner = Instance.new("UICorner")
+uicorner.CornerRadius = UDim.new(0,10)
+uicorner.Parent = icon
 
-task.delay(2,function()
-    loadingFrame:Destroy()
-end)
-
--- ======== Ícone abrir/fechar Hub ========
-local iconButton = Instance.new("TextButton")
-iconButton.Size = UDim2.new(0, 50, 0, 50)
-iconButton.Position = UDim2.new(0, 20, 0, 20)
-iconButton.Text = "☰"
-iconButton.Visible = false
-iconButton.Parent = screenGui
-
-local iconCorner = Instance.new("UICorner")
-iconCorner.CornerRadius = UDim.new(0,10)
-iconCorner.Parent = iconButton
-
-task.delay(2,function()
-    iconButton.Visible = true
-end)
-
--- ======== Hub ========
-local hubFrame = Instance.new("Frame")
-hubFrame.Size = UDim2.new(0,300,0,220)
-hubFrame.Position = UDim2.new(0.5,-150,0.5,-110)
-hubFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
-hubFrame.Visible = false
-hubFrame.Parent = screenGui
+-- Frame do Hub
+local hub = Instance.new("Frame")
+hub.Name = "HubMain"
+hub.Size = UDim2.new(0, 400, 0, 450)
+hub.Position = UDim2.new(0.5, -200, 0.5, -225)
+hub.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+hub.Visible = false
+hub.Parent = screenGui
 
 local hubCorner = Instance.new("UICorner")
-hubCorner.CornerRadius = UDim.new(0,15)
-hubCorner.Parent = hubFrame
+hubCorner.CornerRadius = UDim.new(0,12)
+hubCorner.Parent = hub
 
 -- Título
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1,0,0,40)
-title.Text = "Panel de ADM"
-title.TextColor3 = Color3.fromRGB(255,255,255)
+title.Text = "Script Hub - Criador: Benjamim | TikTok: Nobizin12"
 title.BackgroundTransparency = 1
+title.TextColor3 = Color3.fromRGB(255,255,0)
 title.Font = Enum.Font.SourceSansBold
-title.TextSize = 22
-title.Parent = hubFrame
+title.TextSize = 18
+title.Parent = hub
 
--- Créditos
-local credit = Instance.new("TextLabel")
-credit.Size = UDim2.new(1,0,0,20)
-credit.Position = UDim2.new(0,0,0,40)
-credit.Text = "Criador: Benjamim   TikTok: Nobizin12"
-credit.TextColor3 = Color3.fromRGB(200,200,200)
-credit.BackgroundTransparency = 1
-credit.Font = Enum.Font.SourceSans
-credit.TextSize = 16
-credit.Parent = hubFrame
+-- Permitir mover
+local dragging, dragInput, dragStart, startPos
+local UIS = game:GetService("UserInputService")
 
--- ======== Funções Kick e Kill ========
-local function kickPlayer(name)
-    local target = Players:FindFirstChild(name)
-    if target then
-        target:Kick("Tchau 👋")
-    end
+local function update(input)
+	local delta = input.Position - dragStart
+	hub.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+		startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 end
 
-local function killPlayer(name)
-    local target = Players:FindFirstChild(name)
-    if target and target.Character and target.Character:FindFirstChild("Humanoid") then
-        target.Character.Humanoid.Health = 0
-    end
+hub.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = hub.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+hub.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then
+		dragInput = input
+	end
+end)
+
+UIS.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		update(input)
+	end
+end)
+
+-- Abrir/fechar Hub
+icon.MouseButton1Click:Connect(function()
+	hub.Visible = not hub.Visible
+end)
+
+-- Função utilitária para criar botões
+local function createButton(name, yPos)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, -20, 0, 35)
+	btn.Position = UDim2.new(0, 10, 0, yPos)
+	btn.Text = name
+	btn.BackgroundColor3 = Color3.fromRGB(45,45,45)
+	btn.TextColor3 = Color3.fromRGB(255,255,255)
+	btn.Parent = hub
+	local c = Instance.new("UICorner", btn)
+	c.CornerRadius = UDim.new(0,8)
+	return btn
 end
 
--- ======== Botão Kick ========
-local kickBtn = Instance.new("TextButton")
-kickBtn.Size = UDim2.new(0.8,0,0,40)
-kickBtn.Position = UDim2.new(0.1,0,0.35,0)
-kickBtn.Text = "Kick Player"
-kickBtn.BackgroundColor3 = Color3.fromRGB(200,50,50)
-kickBtn.TextColor3 = Color3.fromRGB(255,255,255)
-kickBtn.Parent = hubFrame
+-- Criando os 10 botões
+local btn1 = createButton("1 - Créditos", 50)
+local btn2 = createButton("2 - Troll", 90)
+local btn3 = createButton("3 - Chat Premium", 130)
+local btn4 = createButton("4 - Copiador de Avatar", 170)
+local btn5 = createButton("5 - Fun (Premium / Vip)", 210)
+local btn6 = createButton("6 - Configurações", 250)
+local btn7 = createButton("7 - View", 290)
+local btn8 = createButton("8 - Chat Troll Visual", 330)
+local btn9 = createButton("9 - Outros Scripts", 370)
+local btn10 = createButton("10 - Misc (GamePass)", 410)
 
-local kickCorner = Instance.new("UICorner")
-kickCorner.CornerRadius = UDim.new(0,10)
-kickCorner.Parent = kickBtn
-
-kickBtn.MouseButton1Click:Connect(function()
-    local name = Players:GetPlayers()[2] -- Exemplo: 2º player
-    if name then
-        kickPlayer(name.Name)
-    end
+--// AÇÕES DOS BOTÕES (placeholders)
+btn1.MouseButton1Click:Connect(function()
+	game:GetService("StarterGui"):SetCore("SendNotification", {
+		Title = "Créditos";
+		Text = "Servidor: discord.gg/NXtJAPAg\nExecutor: "..player.Name;
+		Duration = 6;
+	})
 end)
 
--- ======== Botão Kill ========
-local killBtn = Instance.new("TextButton")
-killBtn.Size = UDim2.new(0.8,0,0,40)
-killBtn.Position = UDim2.new(0.1,0,0.6,0)
-killBtn.Text = "Kill Player"
-killBtn.BackgroundColor3 = Color3.fromRGB(50,50,200)
-killBtn.TextColor3 = Color3.fromRGB(255,255,255)
-killBtn.Parent = hubFrame
-
-local killCorner = Instance.new("UICorner")
-killCorner.CornerRadius = UDim.new(0,10)
-killCorner.Parent = killBtn
-
-killBtn.MouseButton1Click:Connect(function()
-    local name = Players:GetPlayers()[2] -- Exemplo: 2º player
-    if name then
-        killPlayer(name.Name)
-    end
+btn2.MouseButton1Click:Connect(function()
+	print("Troll menu seria aberto aqui (Bring, Bring V2, Bola V2 etc.)")
 end)
 
--- ======== Abrir/Fechar Hub ========
-local hubOpen = false
-iconButton.MouseButton1Click:Connect(function()
-    hubOpen = not hubOpen
-    hubFrame.Visible = hubOpen
+btn3.MouseButton1Click:Connect(function()
+	print("Chat Premium ativado para "..player.Name)
 end)
 
--- ======== Comandos via chat ========
-local function processCommand(player,msg)
-    if msg:sub(1,5) == ";kick" then
-        local targetName = msg:sub(7)
-        kickPlayer(targetName)
-    elseif msg:sub(1,5) == ";kill" then
-        local targetName = msg:sub(7)
-        killPlayer(targetName)
-    end
-end
-
-Players.PlayerAdded:Connect(function(player)
-    player.Chatted:Connect(function(msg)
-        processCommand(player,msg)
-    end)
+btn4.MouseButton1Click:Connect(function()
+	print("Copiador de Avatar ativado")
 end)
 
-LocalPlayer.Chatted:Connect(function(msg)
-    processCommand(LocalPlayer,msg)
+btn5.MouseButton1Click:Connect(function()
+	print("Premium/Vip concedido")
 end)
 
-print("✅ Panel de ADM carregado com sucesso!")
+btn6.MouseButton1Click:Connect(function()
+	print("Abrir configurações de cor e salvar")
+end)
+
+btn7.MouseButton1Click:Connect(function()
+	print("View ativado")
+end)
+
+btn8.MouseButton1Click:Connect(function()
+	print("Chat Troll Visual ativado")
+end)
+
+btn9.MouseButton1Click:Connect(function()
+	print("Executar scripts externos (Coquette Hub, Lolyta, davi999 etc.)")
+end)
+
+btn10.MouseButton1Click:Connect(function()
+	print("Misc: GamePass Brookhaven ativado")
+end)
