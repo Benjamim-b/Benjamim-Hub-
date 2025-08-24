@@ -1,68 +1,70 @@
---// Script Hub - Painel com Ícone e Hub
+-- Script Hub com ícone arredondado e botão
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
---// Criando ScreenGui
+-- Criando a GUI principal
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "ScriptHubGui"
+screenGui.Name = "ScriptHubUI"
 screenGui.Parent = playerGui
+screenGui.ResetOnSpawn = false
 
---// Ícone (botão para abrir/fechar)
+-- Criando ícone de abrir/fechar
 local iconButton = Instance.new("TextButton")
 iconButton.Name = "Icon"
-iconButton.Size = UDim2.new(0, 100, 0, 40)
+iconButton.Text = "≡"
+iconButton.Size = UDim2.new(0, 50, 0, 50)
 iconButton.Position = UDim2.new(0, 20, 0, 200)
-iconButton.Text = "Script Hub"
-iconButton.BackgroundColor3 = Color3.fromRGB(65, 130, 255)
+iconButton.BackgroundColor3 = Color3.fromRGB(70, 130, 250)
 iconButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 iconButton.Parent = screenGui
 
--- Deixar o botão arredondado
-local uicorner = Instance.new("UICorner")
-uicorner.CornerRadius = UDim.new(0, 12)
-uicorner.Parent = iconButton
+local cornerIcon = Instance.new("UICorner")
+cornerIcon.CornerRadius = UDim.new(0, 12)
+cornerIcon.Parent = iconButton
 
---// Hub principal
+-- Criando o Hub
 local mainFrame = Instance.new("Frame")
 mainFrame.Size = UDim2.new(0, 400, 0, 250)
 mainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
-mainFrame.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
+mainFrame.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
 mainFrame.Visible = false
 mainFrame.Parent = screenGui
 
-local mainCorner = Instance.new("UICorner")
-mainCorner.CornerRadius = UDim.new(0, 12)
-mainCorner.Parent = mainFrame
+local cornerMain = Instance.new("UICorner")
+cornerMain.CornerRadius = UDim.new(0, 15)
+cornerMain.Parent = mainFrame
 
---// Título
+-- Título
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, -20, 0, 50)
-title.Position = UDim2.new(0, 10, 0, 10)
+title.Size = UDim2.new(1, 0, 0, 40)
 title.BackgroundTransparency = 1
-title.Text = "O meu servidor do discord"
-title.TextColor3 = Color3.fromRGB(50, 50, 50)
-title.Font = Enum.Font.SourceSansBold
-title.TextSize = 20
+title.Text = "Script Hub"
+title.TextScaled = true
+title.TextColor3 = Color3.fromRGB(0, 0, 0)
 title.Parent = mainFrame
 
---// Botão dentro do hub
-local hubButton = Instance.new("TextButton")
-hubButton.Size = UDim2.new(0, 150, 0, 50)
-hubButton.Position = UDim2.new(0.5, -75, 0.5, -25)
-hubButton.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
-hubButton.Text = "Botão"
-hubButton.Parent = mainFrame
+-- Botão de exemplo
+local exampleBtn = Instance.new("TextButton")
+exampleBtn.Size = UDim2.new(0, 200, 0, 40)
+exampleBtn.Position = UDim2.new(0.5, -100, 0.5, -20)
+exampleBtn.Text = "Botão de Teste"
+exampleBtn.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+exampleBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+exampleBtn.Parent = mainFrame
 
-local hubCorner = Instance.new("UICorner")
-hubCorner.CornerRadius = UDim.new(0, 12)
-hubCorner.Parent = hubButton
+local cornerBtn = Instance.new("UICorner")
+cornerBtn.CornerRadius = UDim.new(0, 10)
+cornerBtn.Parent = exampleBtn
 
---// Funções abrir/fechar
-iconButton.MouseButton1Click:Connect(function()
-    mainFrame.Visible = not mainFrame.Visible
+-- Função do botão de teste
+exampleBtn.MouseButton1Click:Connect(function()
+    print("Botão de Teste clicado!")
 end)
 
-hubButton.MouseButton1Click:Connect(function()
-    print("Botão dentro do Hub foi clicado!")
+-- Alternar Hub
+local open = false
+iconButton.MouseButton1Click:Connect(function()
+    open = not open
+    mainFrame.Visible = open
 end)
